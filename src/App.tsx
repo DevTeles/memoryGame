@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -8,19 +9,20 @@
  * @format
  */
 
+import 'react-native-gesture-handler';
 import React from 'react';
-import {SafeAreaView, StatusBar, Text} from 'react-native';
+import {StatusBar, View} from 'react-native';
+import StackRoutes from './routes';
+import {NavigationContainer} from '@react-navigation/native';
 
 const App = () => {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: '#7159c1',
-      }}>
+    <NavigationContainer>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
-      <Text>JOGO DA MEMÓRIA</Text>
-    </SafeAreaView>
+      <View style={{flex: 1, backgroundColor: '#7159c1'}}>
+        <StackRoutes />
+      </View>
+    </NavigationContainer>
   );
 };
 

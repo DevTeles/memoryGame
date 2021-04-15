@@ -1,4 +1,6 @@
+import {ImageProps} from 'react-native';
 import styled from 'styled-components/native';
+import Button from '../../components/button';
 
 export const Container = styled.View`
   flex: 1;
@@ -14,16 +16,14 @@ export const Title = styled.Text`
   text-align: center;
 `;
 
-export const Interrogation = styled.Text`
-  color: #f2effd;
-  font-size: 102px;
-  font-weight: bold;
-  text-align: center;
-  padding: 40% 0;
+export const Grid = styled.View``;
+
+export const Letter = styled.Image<ImageProps>`
+  width: 32px;
+  height: 32px;
 `;
 
-export const GroupButton = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+export const Reset = styled(Button)`
+  width: 90%;
+  height: 95px;
 `;

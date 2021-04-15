@@ -1,16 +1,36 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, Text} from 'react-native';
+import {View, KeyboardAvoidingView, Platform} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Button from '../../components/button';
+import Input from '../../components/input';
+import {Container, Title, Interrogation, GroupButton} from './styles';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
+  const navigation = useNavigation();
+
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: '#7159c1',
-      }}>
-      <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
-      <Text>JOGO DA MEMÓRIA</Text>
-    </SafeAreaView>
+    <Container>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flex: 1}}>
+          <View>
+            <Title>JOGO DA MEMÓRIA</Title>
+            <Interrogation>😃</Interrogation>
+          </View>
+          <Input name="user" icon="user" placeholder="Nome do usuário" />
+
+          <GroupButton>
+            <Button onPress={() => navigation.navigate('Play')}>Jogar</Button>
+            <Button onPress={() => navigation.navigate('Rank')}>Rank</Button>
+          </GroupButton>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Container>
   );
 };
 
