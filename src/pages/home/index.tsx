@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import {View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import Button from '../../components/button';
 import Input from '../../components/input';
 import {Container, Title, Image, GroupButton} from './styles';
@@ -37,25 +31,27 @@ const Home = () => {
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{flex: 1}}>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <View>
-            <Title>JOGO DA MEMÓRIA</Title>
-            <Image source={chavesbarril} />
-          </View>
-          <Input
-            name="user"
-            icon="user"
-            placeholder="Nome do usuário"
-            value={user}
-            onChangeText={text => setUser(text)}
-          />
+            <View style={{marginBottom: 100}}>
+              <Title>JOGO DA MEMÓRIA</Title>
+              <Image source={chavesbarril} />
+            </View>
 
-          <GroupButton>
-            <Button onPress={handlePlay}>Jogar</Button>
-            <Button onPress={() => navigation.navigate('Rank')}>Rank</Button>
-          </GroupButton>
+            <Input
+              name="user"
+              icon="user"
+              placeholder="Nome do usuário"
+              value={user}
+              onChangeText={text => setUser(text)}
+            />
+            <GroupButton>
+              <Button onPress={handlePlay}>Jogar</Button>
+              <Button onPress={() => navigation.navigate('Rank')}>
+                Classificação
+              </Button>
+            </GroupButton>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </Container>

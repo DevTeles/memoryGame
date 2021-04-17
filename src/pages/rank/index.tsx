@@ -16,6 +16,7 @@ import {
 interface RankProps {
   rounds: number;
   user: string;
+  id: string;
 }
 
 const Rank: React.FC = () => {
@@ -27,7 +28,7 @@ const Rank: React.FC = () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@memorygame.user');
         const data = jsonValue != null ? JSON.parse(jsonValue) : null;
-
+        console.log(data);
         if (data) {
           data.sort(function (a: any, b: any) {
             if (a.rounds > b.rounds) {
@@ -60,7 +61,7 @@ const Rank: React.FC = () => {
         onPress={() => navigation.goBack()}
       />
 
-      <Title>RANKING</Title>
+      <Title>CLASSIFICAÇÃO</Title>
 
       <GroupTitles>
         <Titles>Usuário</Titles>
@@ -70,7 +71,7 @@ const Rank: React.FC = () => {
       <ContainerRank>
         {ranking &&
           ranking.map(rank => (
-            <Content key={rank.rounds + rank.user}>
+            <Content key={rank.id}>
               <Ranking>{rank.user}</Ranking>
               <Ranking>{rank.rounds}</Ranking>
             </Content>

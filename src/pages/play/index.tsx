@@ -34,117 +34,76 @@ const Play = () => {
 
   const [letters, setLetters] = useState<letterProps[]>(
     [
-      {id: 1, name: 'chaves', icon: chaves, flip: false, isCorrect: false},
+      {id: 1, name: 'chaves', icon: chaves, isCorrect: false},
       {
         id: 2,
         name: 'donaflorinda',
         icon: donaflorinda,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 3,
         name: 'bruxa',
         icon: bruxa,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 4,
         name: 'chiquinha',
         icon: chiquinha,
-        flip: false,
         isCorrect: false,
       },
-      {id: 5, name: 'madruga', icon: madruga, flip: false, isCorrect: false},
-      {id: 6, name: 'paty', icon: paty, flip: false, isCorrect: false},
+      {id: 5, name: 'madruga', icon: madruga, isCorrect: false},
+      {id: 6, name: 'paty', icon: paty, isCorrect: false},
       {
         id: 7,
         name: 'barriga',
         icon: barriga,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 8,
         name: 'personagem',
         icon: personagem,
-        flip: false,
         isCorrect: false,
       },
-      {id: 9, name: 'chaves', icon: chaves, flip: false, isCorrect: false},
+      {id: 9, name: 'chaves', icon: chaves, isCorrect: false},
       {
         id: 10,
         name: 'donaflorinda',
         icon: donaflorinda,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 11,
         name: 'bruxa',
         icon: bruxa,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 12,
         name: 'chiquinha',
         icon: chiquinha,
-        flip: false,
         isCorrect: false,
       },
-      {id: 13, name: 'madruga', icon: madruga, flip: false, isCorrect: false},
-      {id: 14, name: 'paty', icon: paty, flip: false, isCorrect: false},
+      {id: 13, name: 'madruga', icon: madruga, isCorrect: false},
+      {id: 14, name: 'paty', icon: paty, isCorrect: false},
       {
         id: 15,
         name: 'barriga',
         icon: barriga,
-        flip: false,
         isCorrect: false,
       },
       {
         id: 16,
         name: 'personagem',
         icon: personagem,
-        flip: false,
         isCorrect: false,
       },
     ].sort(() => 0.5 - Math.random()),
   );
   const navigation = useNavigation();
   const {params} = useRoute();
-
-  useEffect(() => {
-    async function checkFinish() {
-      let isFinish = true;
-
-      letters.forEach(item => {
-        if (!item.isCorrect) {
-          isFinish = false;
-        }
-      });
-
-      if (isFinish) {
-        Alert.alert(
-          `Parabéns ${params.user}`,
-          `Você finalizou com ${rounds} rodadas!`,
-        );
-
-        const jsonValue = await AsyncStorage.getItem('@memorygame.user');
-        const data = jsonValue != null ? JSON.parse(jsonValue) : null;
-
-        const joinStorage = [...data, {user: params.user, rounds}];
-
-        await AsyncStorage.setItem(
-          '@memorygame.user',
-          JSON.stringify(joinStorage),
-        );
-      }
-    }
-
-    checkFinish();
-  }, [letters, params, rounds]);
 
   useEffect(() => {
     function checkRounds() {
@@ -157,7 +116,7 @@ const Play = () => {
   }, [count, rounds]);
 
   useEffect(() => {
-    function checkMatchUpdate() {
+    async function checkMatchUpdate() {
       if (selected.length === 2 && selected[0].name === selected[1].name) {
         const updateLetter = [...letters];
 
@@ -169,11 +128,12 @@ const Play = () => {
           item => item.id === selected[1].id,
         );
 
-        updateLetter[letterIndex1].isCorrect = true;
-        updateLetter[letterIndex2].isCorrect = true;
-
-        setLetters(updateLetter);
         setSelected([]);
+        setTimeout(() => {
+          updateLetter[letterIndex1].isCorrect = true;
+          updateLetter[letterIndex2].isCorrect = true;
+          setLetters(updateLetter);
+        }, 1000);
       } else if (
         selected.length === 2 &&
         selected[0].name !== selected[1].name
@@ -188,11 +148,12 @@ const Play = () => {
           item => item.id === selected[1].id,
         );
 
-        updateLetter[letterIndex1].isCorrect = false;
-        updateLetter[letterIndex2].isCorrect = false;
-
-        setLetters(updateLetter);
         setSelected([]);
+        setTimeout(() => {
+          updateLetter[letterIndex1].isCorrect = false;
+          updateLetter[letterIndex2].isCorrect = false;
+          setLetters(updateLetter);
+        }, 1000);
       }
     }
 
@@ -200,6 +161,10 @@ const Play = () => {
   }, [selected, letters]);
 
   function handleLetter(letterItem: letterProps) {
+    if (repeatedLetter(letterItem)) {
+      return;
+    }
+
     const updateLetter = [...letters];
 
     const letterIndex = updateLetter.findIndex(
@@ -209,6 +174,9 @@ const Play = () => {
     setLetters(updateLetter);
     setCount(count + 1);
     setSelected([...selected, letterItem]);
+    if (count + 1 === 2) {
+      checkFinish();
+    }
   }
 
   function handleReset() {
@@ -223,6 +191,49 @@ const Play = () => {
     setCount(0);
     setRounds(0);
     setSelected([]);
+  }
+
+  function repeatedLetter(letterItem: letterProps) {
+    if (selected.length === 0) {
+      return false;
+    }
+    if (count === 1 && letterItem.id === selected[0].id) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async function checkFinish() {
+    let isFinish = true;
+
+    letters.forEach(item => {
+      if (!item.isCorrect) {
+        isFinish = false;
+      }
+    });
+
+    if (isFinish) {
+      Alert.alert(
+        `Parabéns ${params.user} 🚀`,
+        `Você finalizou com ${rounds} rodadas!`,
+      );
+
+      const jsonValue = await AsyncStorage.getItem('@memorygame.user');
+      const data = jsonValue != null ? JSON.parse(jsonValue) : null;
+
+      const id = new Date().getMilliseconds();
+
+      const joinStorage = [
+        ...(data ? data : []),
+        {user: params.user, rounds, id},
+      ];
+
+      await AsyncStorage.setItem(
+        '@memorygame.user',
+        JSON.stringify(joinStorage),
+      );
+    }
   }
 
   return (
@@ -258,7 +269,7 @@ const Play = () => {
         )}
       />
 
-      <Reset onPress={handleReset}>RESET</Reset>
+      <Reset onPress={handleReset}>REINICIAR</Reset>
     </Container>
   );
 };

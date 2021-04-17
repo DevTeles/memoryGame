@@ -2,6 +2,6 @@ export interface letterProps {
   id: number;
   name: string;
   icon: any;
-  flip: boolean;
+  flip?: boolean;
   isCorrect: boolean;
 }

@@ -12,10 +12,12 @@ export const Title = styled.Text`
   font-weight: bold;
   width: 100%;
   text-align: center;
+  margin-bottom: 20%;
 `;
 
 export const Image = styled.Image`
-  margin: 20% 30%;
+  align-self: center;
+  /* margin: 20%; */
 `;
 
 export const GroupButton = styled.View`
