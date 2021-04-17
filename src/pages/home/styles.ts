@@ -14,12 +14,8 @@ export const Title = styled.Text`
   text-align: center;
 `;
 
-export const Interrogation = styled.Text`
-  color: #f2effd;
-  font-size: 102px;
-  font-weight: bold;
-  text-align: center;
-  padding: 40% 0;
+export const Image = styled.Image`
+  margin: 20% 30%;
 `;
 
 export const GroupButton = styled.View`

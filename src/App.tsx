@@ -14,6 +14,7 @@ import React from 'react';
 import {StatusBar, View} from 'react-native';
 import StackRoutes from './routes';
 import {NavigationContainer} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <View style={{flex: 1, backgroundColor: '#7159c1'}}>
         <StackRoutes />
+        <Toast ref={ref => Toast.setRef(ref)} />
       </View>
     </NavigationContainer>
   );

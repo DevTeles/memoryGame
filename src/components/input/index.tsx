@@ -12,6 +12,7 @@ const Input: React.FC<InputProps> = ({name, icon, ...rest}) => (
     <Icon name={icon} size={20} color="#7159c1" />
 
     <TextInput
+      key={name}
       keyboardAppearance="light"
       placeholderTextColor="#7159c1"
       {...rest}
