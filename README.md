@@ -1,5 +1,9 @@
 # Resultado Final
 
+## Link: <a href="https://www.figma.com/file/NH6W89pxspQLZ99Ykjbko6/Untitled?node-id=0%3A1">Layout Figma</a>
+
+<br />
+
   <img src="src/assets/mobile1.png" />
   <img src="src/assets/mobile2.png" />
   <img src="src/assets/mobile3.png" />
@@ -23,10 +27,11 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - Styled-Components
 - react-navigation/native
 - react-native-vector-icons
+- react-native-toast-message
 
 ---
 
-## Como baixar o projeto
+## Como rodar o projeto
 
 ```bash
 
