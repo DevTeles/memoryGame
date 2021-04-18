@@ -12,6 +12,7 @@ import {
   Ranking,
   ContainerRank,
 } from './styles';
+import {ScrollView} from 'react-native-gesture-handler';
 
 interface RankProps {
   rounds: number;
@@ -28,7 +29,7 @@ const Rank: React.FC = () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@memorygame.user');
         const data = jsonValue != null ? JSON.parse(jsonValue) : null;
-        console.log(data);
+
         if (data) {
           data.sort(function (a: any, b: any) {
             if (a.rounds > b.rounds) {
@@ -37,7 +38,7 @@ const Rank: React.FC = () => {
             if (a.rounds < b.rounds) {
               return -1;
             }
-            // a must be equal to b
+
             return 0;
           });
 
@@ -68,15 +69,17 @@ const Rank: React.FC = () => {
         <Titles>Rodadas</Titles>
       </GroupTitles>
 
-      <ContainerRank>
-        {ranking &&
-          ranking.map(rank => (
-            <Content key={rank.id}>
-              <Ranking>{rank.user}</Ranking>
-              <Ranking>{rank.rounds}</Ranking>
-            </Content>
-          ))}
-      </ContainerRank>
+      <ScrollView>
+        <ContainerRank>
+          {ranking &&
+            ranking.map(rank => (
+              <Content key={rank.id}>
+                <Ranking>{rank.user}</Ranking>
+                <Ranking>{rank.rounds}</Ranking>
+              </Content>
+            ))}
+        </ContainerRank>
+      </ScrollView>
     </Container>
   );
 };

@@ -8,9 +8,11 @@ import chavesbarril from '../../assets/chavesbarril.png';
 
 import Toast from 'react-native-toast-message';
 
+import {useMemory} from '../../hooks/useMemory';
+
 const Home = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState('');
+  const {user, addUser} = useMemory();
 
   function handlePlay() {
     if (!user || user.trim() === '') {
@@ -22,7 +24,8 @@ const Home = () => {
       return;
     }
 
-    navigation.navigate('Play', {user});
+    addUser(user);
+    navigation.navigate('Play');
   }
 
   return (
@@ -43,7 +46,7 @@ const Home = () => {
               icon="user"
               placeholder="Nome do usuário"
               value={user}
-              onChangeText={text => setUser(text)}
+              onChangeText={text => addUser(text)}
             />
             <GroupButton>
               <Button onPress={handlePlay}>Jogar</Button>

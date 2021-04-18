@@ -7,6 +7,7 @@
   <img src="src/assets/mobile1.png" />
   <img src="src/assets/mobile2.png" />
   <img src="src/assets/mobile3.png" />
+  <img src="src/assets/mobile4.png" />
 
 <br /> <br />
 

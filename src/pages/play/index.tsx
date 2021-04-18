@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Container,
   Title,
@@ -10,176 +11,21 @@ import {
   ProfileText,
   Profile,
 } from './styles';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import {Alert, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import letter from '../../assets/letter.png';
-import chaves from '../../assets/chaves.jpeg';
-import donaflorinda from '../../assets/donaflorinda.png';
-import bruxa from '../../assets/bruxa.png';
-import chiquinha from '../../assets/chiquinha.png';
-import madruga from '../../assets/madruga.png';
-import paty from '../../assets/paty.png';
-import barriga from '../../assets/barriga.png';
-import personagem from '../../assets/personagem.png';
-
-import {letterProps} from './interface';
+import {useMemory, letterProps} from '../../hooks/useMemory';
 
 const Play = () => {
   const [count, setCount] = useState(0);
-  const [rounds, setRounds] = useState(0);
-  const [selected, setSelected] = useState<letterProps[]>([]);
+  const [selecteds, setSelecteds] = useState<letterProps[]>([]);
 
-  const [letters, setLetters] = useState<letterProps[]>(
-    [
-      {id: 1, name: 'chaves', icon: chaves, isCorrect: false},
-      {
-        id: 2,
-        name: 'donaflorinda',
-        icon: donaflorinda,
-        isCorrect: false,
-      },
-      {
-        id: 3,
-        name: 'bruxa',
-        icon: bruxa,
-        isCorrect: false,
-      },
-      {
-        id: 4,
-        name: 'chiquinha',
-        icon: chiquinha,
-        isCorrect: false,
-      },
-      {id: 5, name: 'madruga', icon: madruga, isCorrect: false},
-      {id: 6, name: 'paty', icon: paty, isCorrect: false},
-      {
-        id: 7,
-        name: 'barriga',
-        icon: barriga,
-        isCorrect: false,
-      },
-      {
-        id: 8,
-        name: 'personagem',
-        icon: personagem,
-        isCorrect: false,
-      },
-      {id: 9, name: 'chaves', icon: chaves, isCorrect: false},
-      {
-        id: 10,
-        name: 'donaflorinda',
-        icon: donaflorinda,
-        isCorrect: false,
-      },
-      {
-        id: 11,
-        name: 'bruxa',
-        icon: bruxa,
-        isCorrect: false,
-      },
-      {
-        id: 12,
-        name: 'chiquinha',
-        icon: chiquinha,
-        isCorrect: false,
-      },
-      {id: 13, name: 'madruga', icon: madruga, isCorrect: false},
-      {id: 14, name: 'paty', icon: paty, isCorrect: false},
-      {
-        id: 15,
-        name: 'barriga',
-        icon: barriga,
-        isCorrect: false,
-      },
-      {
-        id: 16,
-        name: 'personagem',
-        icon: personagem,
-        isCorrect: false,
-      },
-    ].sort(() => 0.5 - Math.random()),
-  );
   const navigation = useNavigation();
-  const {params} = useRoute();
+  const {user, letters, updateLetters, rounds, updateRounds} = useMemory();
 
-  useEffect(() => {
-    function checkRounds() {
-      if (count === 2) {
-        setRounds(rounds + 1);
-        setCount(0);
-      }
-    }
-    checkRounds();
-  }, [count, rounds]);
-
-  useEffect(() => {
-    async function checkMatchUpdate() {
-      if (selected.length === 2 && selected[0].name === selected[1].name) {
-        const updateLetter = [...letters];
-
-        const letterIndex1 = updateLetter.findIndex(
-          item => item.id === selected[0].id,
-        );
-
-        const letterIndex2 = updateLetter.findIndex(
-          item => item.id === selected[1].id,
-        );
-
-        setSelected([]);
-        setTimeout(() => {
-          updateLetter[letterIndex1].isCorrect = true;
-          updateLetter[letterIndex2].isCorrect = true;
-          setLetters(updateLetter);
-        }, 1000);
-      } else if (
-        selected.length === 2 &&
-        selected[0].name !== selected[1].name
-      ) {
-        const updateLetter = [...letters];
-
-        const letterIndex1 = updateLetter.findIndex(
-          item => item.id === selected[0].id,
-        );
-
-        const letterIndex2 = updateLetter.findIndex(
-          item => item.id === selected[1].id,
-        );
-
-        setSelected([]);
-        setTimeout(() => {
-          updateLetter[letterIndex1].isCorrect = false;
-          updateLetter[letterIndex2].isCorrect = false;
-          setLetters(updateLetter);
-        }, 1000);
-      }
-    }
-
-    checkMatchUpdate();
-  }, [selected, letters]);
-
-  function handleLetter(letterItem: letterProps) {
-    if (repeatedLetter(letterItem)) {
-      return;
-    }
-
-    const updateLetter = [...letters];
-
-    const letterIndex = updateLetter.findIndex(
-      item => item.id === letterItem.id,
-    );
-    updateLetter[letterIndex].isCorrect = !updateLetter[letterIndex].isCorrect;
-    setLetters(updateLetter);
-    setCount(count + 1);
-    setSelected([...selected, letterItem]);
-    if (count + 1 === 2) {
-      checkFinish();
-    }
-  }
-
-  function handleReset() {
+  const handleReset = useCallback(() => {
     const updateLetter = [...letters];
 
     updateLetter.map(item => {
@@ -187,24 +33,87 @@ const Play = () => {
       return item;
     });
 
-    setLetters(updateLetter.sort(() => 0.5 - Math.random()));
+    updateLetters(updateLetter.sort(() => 0.5 - Math.random()));
     setCount(0);
-    setRounds(0);
-    setSelected([]);
-  }
+    updateRounds(0);
+    setSelecteds([]);
+  }, [letters, updateLetters, updateRounds]);
 
-  function repeatedLetter(letterItem: letterProps) {
-    if (selected.length === 0) {
+  useEffect(() => {
+    handleReset();
+  }, []);
+
+  useEffect(() => {
+    function checkRounds() {
+      if (count === 2) {
+        updateRounds(rounds + 1);
+        setCount(0);
+      }
+    }
+    checkRounds();
+  }, [count, rounds, updateRounds]);
+
+  useEffect(() => {
+    async function checkMatchUpdate() {
+      if (selecteds.length === 2 && selecteds[0].name === selecteds[1].name) {
+        const updateLetter = [...letters];
+
+        const letterIndex1 = updateLetter.findIndex(
+          item => item.id === selecteds[0].id,
+        );
+
+        const letterIndex2 = updateLetter.findIndex(
+          item => item.id === selecteds[1].id,
+        );
+
+        setSelecteds([]);
+
+        setTimeout(() => {
+          updateLetter[letterIndex1].isCorrect = true;
+          updateLetter[letterIndex2].isCorrect = true;
+          updateLetters(updateLetter);
+        }, 1000);
+      } else if (
+        selecteds.length === 2 &&
+        selecteds[0].name !== selecteds[1].name
+      ) {
+        const updateLetter = [...letters];
+
+        const letterIndex1 = updateLetter.findIndex(
+          item => item.id === selecteds[0].id,
+        );
+
+        const letterIndex2 = updateLetter.findIndex(
+          item => item.id === selecteds[1].id,
+        );
+
+        setSelecteds([]);
+        setTimeout(() => {
+          updateLetter[letterIndex1].isCorrect = false;
+          updateLetter[letterIndex2].isCorrect = false;
+          updateLetters(updateLetter);
+        }, 1000);
+      }
+    }
+
+    checkMatchUpdate();
+  }, [selecteds, letters, updateLetters]);
+
+  const repeatedLetter = useCallback(
+    (letterItem: letterProps) => {
+      if (selecteds.length === 0) {
+        return false;
+      }
+      if (count === 1 && letterItem.id === selecteds[0].id) {
+        return true;
+      }
+
       return false;
-    }
-    if (count === 1 && letterItem.id === selected[0].id) {
-      return true;
-    }
+    },
+    [selecteds, count],
+  );
 
-    return false;
-  }
-
-  async function checkFinish() {
+  const checkFinish = useCallback(async () => {
     let isFinish = true;
 
     letters.forEach(item => {
@@ -214,11 +123,6 @@ const Play = () => {
     });
 
     if (isFinish) {
-      Alert.alert(
-        `Parabéns ${params.user} 🚀`,
-        `Você finalizou com ${rounds} rodadas!`,
-      );
-
       const jsonValue = await AsyncStorage.getItem('@memorygame.user');
       const data = jsonValue != null ? JSON.parse(jsonValue) : null;
 
@@ -226,15 +130,40 @@ const Play = () => {
 
       const joinStorage = [
         ...(data ? data : []),
-        {user: params.user, rounds, id},
+        {user, rounds: rounds + 1, id},
       ];
 
       await AsyncStorage.setItem(
         '@memorygame.user',
         JSON.stringify(joinStorage),
       );
+
+      Alert.alert(
+        `Parabéns ${user} 🚀`,
+        `Você finalizou com ${rounds + 1} rodadas!`,
+      );
     }
-  }
+  }, [letters, rounds, user]);
+
+  const handleLetter = useCallback(
+    (letterItem: letterProps) => {
+      if (repeatedLetter(letterItem)) {
+        return;
+      }
+
+      const updateLetter = [...letters];
+      const letterIndex = updateLetter.findIndex(
+        item => item.id === letterItem.id,
+      );
+      updateLetter[letterIndex].isCorrect = !updateLetter[letterIndex]
+        .isCorrect;
+      setCount(count + 1);
+      updateLetters(updateLetter);
+      setSelecteds([...selecteds, letterItem]);
+      checkFinish();
+    },
+    [updateLetters, count, letters, repeatedLetter, selecteds, checkFinish],
+  );
 
   return (
     <Container>
@@ -247,7 +176,7 @@ const Play = () => {
           onPress={() => navigation.goBack()}
         />
         <Profile>
-          <ProfileText>{params?.user}</ProfileText>
+          <ProfileText>{user}</ProfileText>
           <ProfileText>Rodadas: {rounds}</ProfileText>
         </Profile>
       </Header>
@@ -261,7 +190,7 @@ const Play = () => {
           <Grid key={item.id}>
             <TouchableOpacity onPress={() => handleLetter(item)}>
               <Letter
-                source={item.isCorrect ? item.icon : letter}
+                source={item.isCorrect ? item.icon : item.letter}
                 style={{resizeMode: 'cover'}}
               />
             </TouchableOpacity>
