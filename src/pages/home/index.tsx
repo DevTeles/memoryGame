@@ -37,7 +37,7 @@ const Home = () => {
         <ScrollView keyboardShouldPersistTaps="handled">
           <View>
             <View style={{marginBottom: 100}}>
-              <Title>JOGO DA MEMÓRIA</Title>
+              <Title>MEMÓRIA CHAVES</Title>
               <Image source={chavesbarril} />
             </View>
 

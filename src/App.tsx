@@ -10,15 +10,20 @@
  */
 
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, View} from 'react-native';
-import StackRoutes from './routes';
 import {NavigationContainer} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import SplashScreen from 'react-native-splash-screen';
 
+import StackRoutes from './routes';
 import {MemoryProvider} from './hooks/useMemory';
 
 const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <MemoryProvider>
       <NavigationContainer>
