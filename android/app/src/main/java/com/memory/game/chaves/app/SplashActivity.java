@@ -1,4 +1,4 @@
-package com.memorygame;
+package com.memory.game.chaves.app;
 
 import android.content.Intent;
 import android.os.Bundle;
